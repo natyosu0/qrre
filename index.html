@@ -6,22 +6,31 @@
 <script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
+body {
+text-align: center;
+}
+#codeBox {
+margin-top: 10px;
+font-size: 18px;
+font-weight: bold;
 #reader {
 width: 320px;
-height: 260px;
+height: 320px;
 margin-top: 20px;
-}
+}  
 </style>
 </head>
 <body>
 
 <h3>QRコード読み取り</h3>
 
+<div id="codebox">  
+  製品番号：<span id="code"></span>
+</div>
+
 <button id="startBtn">カメラ起動</button>
 
 <div id="reader"></div>
-
-<p>製品番号：<span id="code"></span></p>
 
 <script>
 var qr = null;
