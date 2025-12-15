@@ -1,39 +1,56 @@
-<!DOCTYPE>
+<!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
 <title>QR読み取り</title>
 <script src="https://unpkg.com/html5-qrcode"></script>
+
 <style>
-    video { width: 320px; height: 240px; background: #000; border: 1px solid #333;}
-	#reader { width: 320px; margin-top: 10px;}
+#reader {
+width: 320px;
+height: 320px;
+margin-top: 20px;
+}
 </style>
 </head>
 <body>
-<h3>読み取り</h3>
-<button id="startBtn">カメラ起動</button>
-<div id="reader"></div>
-<h1><p>製品番号:<span id="code"></span></p></h1>
-<script>
-let scannre = null;
-//カメラ起動
-document.getElementById("startBtn").onclick = function () {
-    if (scanner !== null){
-		return;
-    }
-	scanner = new html5QrcodeScanner(
-		"reader", { fps: 10, qrbox: 250, facingMode: "environment"}, false
-	);
-	scanner.render(onScanSuccess, onScanError);
-};
 
-//QRコード読み取り
-function onScanSuccess(decodedText, decodedResult){
-    document.getElementById("code").innerText = decodeText;
+<h3>QRコード読み取り</h3>
+
+<button id="startBtn">カメラ起動</button>
+
+<div id="reader"></div>
+
+<p>製品番号：<span id="code"></span></p>
+
+<script>
+var qr = null;
+
+document.getElementById("startBtn").onclick = function () {
+
+if (qr !== null) {
+return;
 }
-function onScanError(errorMessage){
-    console.log(errorMessage);
+
+qr = new Html5Qrcode("reader");
+
+qr.start(
+{ facingMode: "environment" }, // 背面カメラ
+{
+fps: 10,
+qrbox: 250
+},
+function (decodedText) {
+document.getElementById("code").innerText = decodedText;
+},
+function (errorMessage) {
+// 読み取り失敗時（無視でOK）
 }
+).catch(function (err) {
+alert("カメラを起動できません: " + err);
+});
+};
 </script>
+
 </body>
 </html>
