@@ -1,0 +1,39 @@
+<!DOCTYPE>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>QR読み取り</title>
+<script src="https://unpkg.com/html5-qrcode"></script>
+<style>
+    video { width: 320px; height: 240px; background: #000; border: 1px solid #333;}
+	#reader { width: 320px; margin-top: 10px;}
+</style>
+</head>
+<body>
+<h3>読み取り</h3>
+<button id="startBtn">カメラ起動</button>
+<div id="reader"></div>
+<h1><p>製品番号:<span id="code"></span></p></h1>
+<script>
+let scannre = null;
+//カメラ起動
+document.getElementById("startBtn").onclick = function () {
+    if (scanner !== null){
+		return;
+    }
+	scanner = new html5QrcodeScanner(
+		"reader", { fps: 10, qrbox: 250, facingMode: "environment"}, false
+	);
+	scanner.render(onScanSuccess, onScanError);
+};
+
+//QRコード読み取り
+function onScanSuccess(decodedText, decodedResult){
+    document.getElementById("code").innerText = decodeText;
+}
+function onScanError(errorMessage){
+    console.log(errorMessage);
+}
+</script>
+</body>
+</html>
