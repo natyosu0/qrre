@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <title>QR読み取り</title>
-<script src="https://unpkg.com/html5-qrcode"></script>
 <script src="https://cdn.jsdelivr.net/npm/xlsx/dist/xlsx.full.min.js"></script>
+<script src="https://unpkg.com/html5-qrcode"></script>
 
 <style>
 body {
@@ -40,6 +40,9 @@ margin-top: 20px;
 
 <script>
 var qr = null;
+var qrText = "";
+var workbook;
+var worksheet;
 
 document.getElementById("startBtn").onclick = function () {
 
@@ -51,31 +54,26 @@ qr = new Html5Qrcode("reader");
 
 qr.start(
     { facingMode: "environment" }, // 背面カメラ
-    {
-    fps: 10,
-    qrbox: 250
+    { fps: 10, qrbox: 250 },
+    function (decodedText) {
+        qrText = decodedText;
+		document.getElementById("code").innerText = decodedText;
     },
-function (decodedText) {
-document.getElementById("code").innerText = decodedText;
-},
-function (errorMessage) {
-}
-).catch(function (err) {
-alert("カメラを起動できません: " + err);
-});
+    function (errorMessage) {
+    }
+    ).catch(function (err) {
+    alert("カメラを起動できません: " + err);
+    });
 };
-
-var workbook;
-var worksheet;
 
 document.getElementById("file").addEventListener("change", function(e){
-var reader = new FileReader();
-reader.onload = function(e){
-var data = new Uint8Array(e.target.result);
-workbook = XLSX.read(data, {type: "array"});
-worksheet = workbook.Sheets[workbook.SheetNames[0]];
-};
-reader.readAsArrayBuffer(e.target.files[0]);
+    var reader = new FileReader();
+    reader.onload = function(e){
+        var data = new Uint8Array(e.target.result);
+        workbook = XLSX.read(data, {type: "array"});
+        worksheet = workbook.Sheets[workbook.SheetNames[0]];
+    };
+    reader.readAsArrayBuffer(e.target.files[0]);
 });
 
 function writeExcel(){
@@ -84,23 +82,22 @@ function writeExcel(){
 		return;
 	}
 	
-	var cellA2 = worksheet["A2"] ? String(worksheet["A2"].v) : "";
+	var cellA2 = worksheet["A2"];
 	
-	if (code.includes(sellA2)){
-	    var value = document.getElementById("inputData").value;
-	
-        // A2セルに値を書き込み
-        worksheet["B2"] = { t: "s", v: value };
-	    worksheet["!ref"] = "A1:B2";
-
-        var newWb = XLSX.utils.book_new();
-        XLSX.utils.book_append_sheet(newWb, worksheet, "Sheet1");
-
-        XLSX.writeFile(newWb, "updated.xlsx");
-	}else {
+	if (cellA2.v !== code){
 	    alert("eroor");
 	    return;
 	}
+	
+    var value = document.getElementById("inputData").value;
+	
+    worksheet["B2"] = { t: "s", v: value };
+	worksheet["!ref"] = "A1:B2";
+
+    var newWb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(newWb, worksheet, "Sheet1");
+
+    XLSX.writeFile(newWb, "updated.xlsx");
 }
 
 </script>
