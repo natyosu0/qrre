@@ -32,7 +32,7 @@ margin-top: 20px;
 <input type="text" id="inputData" placeholder="入力">
 <br><br>
 <input type="file" id="file">
-<button onclick="writeExcel()">作業者名</button>
+<button onclick="writeExcel()">入力</button>
 
 <button id="startBtn">カメラ起動</button>
 
@@ -86,21 +86,21 @@ function writeExcel(){
 	
 	var cellA2 = worksheet["A2"] ? String(worksheet["A2"].v) : "";
 	
-	if (cellA2 !== code){
+	if (code.includes(sellA2)){
+	    var value = document.getElementById("inputData").value;
+	
+        // A2セルに値を書き込み
+        worksheet["B2"] = { t: "s", v: value };
+	    worksheet["!ref"] = "A1:B2";
+
+        var newWb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(newWb, worksheet, "Sheet1");
+
+        XLSX.writeFile(newWb, "updated.xlsx");
+	}else {
 	    alert("eroor");
 	    return;
 	}
-	
-    var value = document.getElementById("inputData").value;
-	
-    // A2セルに値を書き込み
-    worksheet["B2"] = { t: "s", v: value };
-	worksheet["!ref"] = "A1:B2";
-
-    var newWb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(newWb, worksheet, "Sheet1");
-
-    XLSX.writeFile(newWb, "updated.xlsx");
 }
 
 </script>
